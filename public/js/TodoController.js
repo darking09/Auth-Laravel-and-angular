@@ -14,7 +14,15 @@ app.controller('TodoController',  function($state,$http,$rootScope, $scope,$auth
     $scope.init = function (){
  
         $http.get('http://localhost/authTodo/public/api/todo').then(function(data){
-            $scope.todos=data.data;
+
+            if($rootScope.currentUser === undefined){
+                $http.get('http://localhost/authTodo/public/api/authenticate/user').
+                then(function(response) {
+                    $rootScope.currentUser = response.data.user;
+                    $scope.todos=data.data;
+                });
+            }
+            
         }, function(error){
             $state.go('login');
         })
